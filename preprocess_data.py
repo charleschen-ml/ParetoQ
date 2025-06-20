@@ -11,7 +11,7 @@ dataset = load_dataset("squad", split="train")
 tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
 tokenizer.pad_token = tokenizer.eos_token  # GPT-2 needs this for padding
 
-max_length = 2048
+max_length = tokenizer.model_max_length  # typically 1024 for GPT-2
 output_path = "/tmp/train.jsonl"
 kept, skipped = 0, 0
 
