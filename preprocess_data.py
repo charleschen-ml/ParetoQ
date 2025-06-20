@@ -12,6 +12,7 @@ tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
 tokenizer.pad_token = tokenizer.eos_token  # GPT-2 needs this for padding
 
 max_length = tokenizer.model_max_length  # typically 1024 for GPT-2
+print(f"max_length = {max_length}")
 output_path = "/tmp/train.jsonl"
 kept, skipped = 0, 0
 
