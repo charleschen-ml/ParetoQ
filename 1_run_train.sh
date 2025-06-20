@@ -6,7 +6,7 @@
 torchrun --nnodes=1 --nproc_per_node=1 train.py \
 --local_dir "/tmp/llama/" \
 --input_model_filename "meta-llama/Llama-3.2-1B" \
---output_model_filename "1B-finetuned" \
+--output_model_filename "/content/drive/MyDrive/Colab_Notebooks/gpt2-sft" \
 --train_data_local_path "/tmp/train.jsonl" \
 --do_train True \
 --do_eval False \
