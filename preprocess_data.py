@@ -26,16 +26,19 @@ with open(output_path, "w") as f:
         tokenized = tokenizer(text, truncation=False, return_tensors="pt")
         length = tokenized["input_ids"].shape[1]
 
+        tokens = tokenizer.encode(text, truncation=False)
+        length = len(tokens)
+
         # Print one short example
         if length <= max_length and not printed_short:
             print("\n✅ One example within max_length:")
-            print(tokenizer.decode(tokenized["input_ids"][0]))
+            print(tokenizer.decode(tokens))
             printed_short = True
 
         # Print one long example
         if length > max_length and not printed_long:
             print("\n⚠️ One example exceeding max_length:")
-            print(tokenizer.decode(tokenized["input_ids"][0]))
+            print(tokenizer.decode(tokens))
             printed_long = True
 
         if length <= max_length:
