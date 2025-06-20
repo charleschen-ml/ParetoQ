@@ -12,10 +12,10 @@ import sys
 import os
 
 print("Loading tokenizer")
-tokenizer = AutoTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
+tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
 print("Tokenizer loaded!")
 print("Loading model")
-model = AutoModelForCausalLM.from_pretrained("decapoda-research/llama-7b-hf")
+model = AutoModelForCausalLM.from_pretrained("openai-community/gpt2")
 model = model.cuda()
 print("Model loaded!")
 
