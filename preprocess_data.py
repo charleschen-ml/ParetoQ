@@ -9,12 +9,12 @@ dataset = load_dataset("squad", split="train")
 
 # Load tokenizer
 tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
-tokenizer.pad_token = tokenizer.eos_token  # GPT-2 needs this for padding
+tokenizer.pad_token = tokenizer.eos_token
 
-max_length = tokenizer.model_max_length  # typically 1024 for GPT-2
-print(f"max_length = {max_length}")
-output_path = "/tmp/train.jsonl"
+max_length = tokenizer.model_max_length  # GPT-2 = 1024
+output_path = "/tmp/train_filtered.jsonl"
 kept, skipped = 0, 0
+printed_short, printed_long = False, False
 
 with open(output_path, "w") as f:
     for example in dataset:
@@ -24,10 +24,24 @@ with open(output_path, "w") as f:
         text = f"{context}\n{question}\n{answer}"
 
         tokenized = tokenizer(text, truncation=False, return_tensors="pt")
-        if tokenized["input_ids"].shape[1] <= max_length:
+        length = tokenized["input_ids"].shape[1]
+
+        # Print one short example
+        if length <= max_length and not printed_short:
+            print("\n✅ One example within max_length:")
+            print(tokenizer.decode(tokenized["input_ids"][0]))
+            printed_short = True
+
+        # Print one long example
+        if length > max_length and not printed_long:
+            print("\n⚠️ One example exceeding max_length:")
+            print(tokenizer.decode(tokenized["input_ids"][0]))
+            printed_long = True
+
+        if length <= max_length:
             f.write(json.dumps({"text": text}) + "\n")
             kept += 1
         else:
             skipped += 1
 
-print(f"Saved {kept} examples to {output_path}, skipped {skipped} over-length examples.")
+print(f"\nSaved {kept} examples to {output_path}, skipped {skipped} over-length examples.")
