@@ -69,8 +69,8 @@ def train():
         cache_dir=training_args.cache_dir,
         model_max_length=training_args.model_max_length,
         padding_side="right",
-        add_bos_token=False,
-        add_eos_token=False,
+        # add_bos_token=False,
+        # add_eos_token=False,
     )
     log.info("Complete tokenizer loading...")
 
