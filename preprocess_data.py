@@ -18,9 +18,9 @@ printed_short, printed_long = False, False
 
 with open(output_path, "w") as f:
     for example in dataset:
-        context = example["context"]
-        question = example["question"]
-        answer = example["answers"]["text"][0] if example["answers"]["text"] else ""
+        context = example["context"].strip()
+        question = example["question"].strip()
+        answer = example["answers"]["text"][0].strip() if example["answers"]["text"] else ""
         text = f"{context}\n{question}\n{answer}"
 
         tokenized = tokenizer(text, truncation=False, return_tensors="pt")
