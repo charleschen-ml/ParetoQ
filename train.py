@@ -28,15 +28,17 @@ def train():
     log.info("Start to load model...")
     dtype = torch.bfloat16 if training_args.bf16 else torch.float
 
-    config = LlamaConfig.from_pretrained(model_args.input_model_filename)
-    config.w_bits = model_args.w_bits
-    model = LlamaForCausalLMQuant.from_pretrained(
+    config = transformers.AutoConfig.from_pretrained(
+        model_args.input_model_filename,
+        cache_dir=training_args.cache_dir,
+    )
+    model = transformers.AutoModelForCausalLM.from_pretrained(
         pretrained_model_name_or_path=model_args.input_model_filename,
         config=config,
         cache_dir=training_args.cache_dir,
         torch_dtype=dtype,
         low_cpu_mem_usage=True,
-        device_map='cpu',
+        device_map=None,
     )
 
     if not model_args.contain_weight_clip_val:
@@ -62,7 +64,7 @@ def train():
     log.info("Complete model loading...")
 
     log.info("Start to load tokenizer...")
-    tokenizer = transformers.LlamaTokenizerFast.from_pretrained(
+    tokenizer = transformers.AutoTokenizer.from_pretrained(
         pretrained_model_name_or_path=model_args.input_model_filename,
         cache_dir=training_args.cache_dir,
         model_max_length=training_args.model_max_length,
