@@ -17,6 +17,7 @@ from utils import datautils
 from utils.process_args import process_args
 from torch import distributed as dist
 from transformers import default_data_collator, Trainer
+from transformers import DataCollatorForLanguageModeling # for gpt2
 
 log = utils.get_logger("clm")
 
@@ -72,6 +73,8 @@ def train():
         # add_bos_token=False,
         # add_eos_token=False,
     )
+    tokenizer.pad_token = tokenizer.eos_token # charles
+    model.config.pad_token_id = tokenizer.eos_token_id # charles
     log.info("Complete tokenizer loading...")
 
     train_dataset, valid_dataset = datautils.get_train_val_dataset(
@@ -88,13 +91,17 @@ def train():
     )
     model.config.use_cache = False
     myTrainer = Trainer
+    data_collator = DataCollatorForLanguageModeling( # charles
+        tokenizer=tokenizer,
+        mlm=False
+    )
     trainer = myTrainer(
         model=model,
         tokenizer=tokenizer,
         args=training_args,
         train_dataset=train_data if training_args.do_train else None,
         eval_dataset=valid_data if training_args.do_eval else None,
-        data_collator=default_data_collator,
+        data_collator=data_collator, # charles
     )
 
     if training_args.do_train:
