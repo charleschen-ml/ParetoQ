@@ -83,9 +83,16 @@ def train():
         if data_args.eval_data_local_path is not None
         else None,
     )
+    train_dataset = train_dataset.select([0]) # charles debug
     train_data = datautils.CustomJsonDataset(
         train_dataset, tokenizer, block_size=training_args.model_max_length
     )
+
+    print("🚨 Tokenized input_ids of first sample:")  # charles debug
+    print(train_data[0]["input_ids"])  # charles debug
+    print("📝 Decoded input text of first sample:")  # charles debug
+    print(tokenizer.decode(train_data[0]["input_ids"]))  # charles debug
+
     valid_data = datautils.CustomJsonDataset(
         valid_dataset, tokenizer, block_size=min(training_args.model_max_length, 1024)
     )
@@ -95,6 +102,16 @@ def train():
         tokenizer=tokenizer,
         mlm=False
     )
+
+    # charles debug ---
+    batch = data_collator([train_data[0]])
+    print("📦 Batch from data_collator:")
+    print("input_ids:", batch["input_ids"].shape)
+    print("labels:", batch["labels"].shape)
+    print("input_ids[0]:", batch["input_ids"][0])
+    print("labels[0]:", batch["labels"][0])
+    # charles debug ---
+
     trainer = myTrainer(
         model=model,
         tokenizer=tokenizer,
