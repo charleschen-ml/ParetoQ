@@ -83,7 +83,7 @@ def train():
         if data_args.eval_data_local_path is not None
         else None,
     )
-    train_dataset = train_dataset[:5] # charles debug
+    train_dataset = train_dataset[:1] # charles debug
     train_data = datautils.CustomJsonDataset(
         train_dataset, tokenizer, block_size=training_args.model_max_length
     )
